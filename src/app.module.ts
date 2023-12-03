@@ -8,9 +8,9 @@ import { User } from './users/models/user.model';
 
 @Module({
 	imports: [
-		ConfigModule.forRoot(({
+		ConfigModule.forRoot({
 			envFilePath: "src/.env"
-		})),
+		}),
 		SequelizeModule.forRoot({
 			dialect: 'postgres',
 			host: 'localhost',
