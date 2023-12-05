@@ -5,6 +5,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { PostsService } from './posts.service';
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
+import { CreateLikeDto } from "./dto/create-like.dto";
 
 @Controller('posts')
 export class PostsController {
@@ -24,6 +25,11 @@ export class PostsController {
 	@UseInterceptors(FileInterceptor("image"))
 	create(@Body() dto: CreatePostDto, @UploadedFile() image: Express.Multer.File) {
 		return this.postsService.createPost(dto, image);
+	}
+
+	@Post("/like")
+	likePost(@Body() dto: CreateLikeDto) {
+		return this.postsService.likePost(dto)
 	}
 
 	@Put("/:title")

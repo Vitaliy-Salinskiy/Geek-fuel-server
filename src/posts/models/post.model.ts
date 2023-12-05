@@ -1,5 +1,7 @@
-import { Table, Column, Model, DataType, BelongsTo, ForeignKey } from "sequelize-typescript";
+import { Table, Column, Model, DataType, BelongsTo, ForeignKey, HasMany } from "sequelize-typescript";
+
 import { User } from "src/users/models/user.model";
+import { Like } from "./like.model";
 
 interface PostCreationAttrs {
 	image: string;
@@ -10,6 +12,7 @@ interface PostCreationAttrs {
 
 @Table({ tableName: "posts" })
 export class Post extends Model<Post, PostCreationAttrs> {
+
 	@Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
 	id: number;
 
@@ -28,5 +31,8 @@ export class Post extends Model<Post, PostCreationAttrs> {
 
 	@BelongsTo(() => User)
 	author: User;
+
+	@HasMany(() => Like)
+	likes: Like[]
 
 }

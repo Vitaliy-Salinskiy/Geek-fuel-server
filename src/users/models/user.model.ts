@@ -1,6 +1,7 @@
 import { Column, DataType, Table, Model, HasMany } from "sequelize-typescript";
 
 import { Post } from "../../posts/models/post.model";
+import { Like } from "../../posts/models/like.model"
 
 interface UserCreationAttrs {
 	username: string;
@@ -19,5 +20,8 @@ export class User extends Model<User, UserCreationAttrs>{
 	password: string;
 
 	@HasMany(() => Post)
-	posts: Post[]
+	posts: Post[];
+
+	@HasMany(() => Like)
+	likes: Like[];
 }

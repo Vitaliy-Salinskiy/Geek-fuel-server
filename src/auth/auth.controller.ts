@@ -11,8 +11,8 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 export class AuthController {
 
 	constructor(
-		private userService: UsersService,
-		private authService: AuthService
+		private readonly userService: UsersService,
+		private readonly authService: AuthService
 	) { }
 
 	@UseGuards(LocalAuthGuard)

@@ -8,6 +8,7 @@ import { FilesModule } from 'src/files/files.module';
 import { Post } from "./models/post.model";
 import { UsersModule } from 'src/users/users.module';
 import { User } from 'src/users/models/user.model';
+import { Like } from './models/like.model';
 
 @Module({
 	controllers: [PostsController],
@@ -16,7 +17,7 @@ import { User } from 'src/users/models/user.model';
 		MulterModule.register({
 			dest: "./uploads/posts"
 		}),
-		SequelizeModule.forFeature([Post, User]),
+		SequelizeModule.forFeature([Post, User, Like]),
 		FilesModule,
 		UsersModule
 	]

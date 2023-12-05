@@ -5,18 +5,21 @@ import { Post } from "./models/post.model";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { FilesService } from "src/files/files.service";
+import { Like } from "./models/like.model";
+import { CreateLikeDto } from "./dto/create-like.dto";
 
 @Injectable()
 export class PostsService {
 
 	constructor(
 		@InjectModel(Post) private postsRepository: typeof Post,
+		@InjectModel(Like) private likeRepository: typeof Like,
 		private fileService: FilesService
 	) { }
 
 
 	async getSinglePost(title: string): Promise<Post> {
-		const post = await this.postsRepository.findOne({ where: { title } });
+		const post = await this.postsRepository.findOne({ where: { title, }, include: { all: true } });
 
 		if (!post) {
 			throw new NotFoundException(`Post with such title: ${title} doesn't exist`)
@@ -44,8 +47,6 @@ export class PostsService {
 		try {
 			const post = await this.postsRepository.findOne({ where: { title } });
 
-			console.log(post)
-
 			if (!post) {
 				throw new NotFoundException(`Post with such title: ${title} doesn't exist`)
 			}
@@ -53,11 +54,8 @@ export class PostsService {
 			this.fileService.fileToWebp(image);
 			this.fileService.updateFile(post.image, image.path);
 
-			const postU = await this.postsRepository.update({ ...dto }, { where: { title } })
-			console.log(postU)
+			await this.postsRepository.update({ ...dto }, { where: { title } })
 			const updatedPost = await this.postsRepository.findByPk(post.id);
-			console.log(updatedPost)
-
 
 			return updatedPost;
 		} catch (e) {
@@ -77,7 +75,16 @@ export class PostsService {
 
 			return { message: 'Post deleted successfully', deletedPost: post };
 		} catch (e) {
-			throw new HttpException(`Something went wrong`, HttpStatus.INTERNAL_SERVER_ERROR)
+			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+		}
+	}
+
+	async likePost(dto: CreateLikeDto) {
+		try {
+			const like = this.likeRepository.create({ ...dto })
+			return like;
+		} catch (e) {
+			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
 		}
 	}
 

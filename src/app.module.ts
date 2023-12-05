@@ -8,6 +8,7 @@ import { User } from './users/models/user.model';
 import { PostsModule } from './posts/posts.module';
 import { Post } from "./posts/models/post.model";
 import { FilesModule } from './files/files.module';
+import { Like } from './posts/models/like.model';
 
 @Module({
 	imports: [
@@ -21,7 +22,7 @@ import { FilesModule } from './files/files.module';
 			username: 'postgres',
 			password: 'root',
 			database: 'Geek-fuel',
-			models: [User, Post],
+			models: [User, Post, Like],
 			autoLoadModels: true,
 		}),
 		AuthModule,
