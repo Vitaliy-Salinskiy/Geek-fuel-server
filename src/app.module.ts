@@ -5,6 +5,9 @@ import { ConfigModule } from "@nestjs/config";
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/models/user.model';
+import { PostsModule } from './posts/posts.module';
+import { Post } from "./posts/models/post.model";
+import { FilesModule } from './files/files.module';
 
 @Module({
 	imports: [
@@ -18,11 +21,13 @@ import { User } from './users/models/user.model';
 			username: 'postgres',
 			password: 'root',
 			database: 'Geek-fuel',
-			models: [User],
-			autoLoadModels: true
+			models: [User, Post],
+			autoLoadModels: true,
 		}),
 		AuthModule,
 		UsersModule,
+		PostsModule,
+		FilesModule,
 	],
 	controllers: [],
 })

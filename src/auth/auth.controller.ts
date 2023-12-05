@@ -23,7 +23,7 @@ export class AuthController {
 
 	@Post("/registration")
 	async registration(@Body() createUserDto: CreateUserDto) {
-		return await this.userService.createUser(createUserDto.username, createUserDto.password);
+		return await this.userService.createUser(createUserDto);
 	}
 
 	@UseGuards(JwtAuthGuard)
