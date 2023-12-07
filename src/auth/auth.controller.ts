@@ -6,6 +6,8 @@ import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { AuthService } from "./auth.service";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
+import { Roles } from "./decorators/roles.decorator";
+import { RolesGuard } from "./guards/role.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -26,7 +28,8 @@ export class AuthController {
 		return await this.userService.createUser(createUserDto);
 	}
 
-	@UseGuards(JwtAuthGuard)
+	@UseGuards(JwtAuthGuard, RolesGuard)
+	@Roles("USER")
 	@Get("/profile")
 	getProfile(@Request() req: ExpressRequest) {
 		return req.user

@@ -6,9 +6,12 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/models/user.model';
 import { PostsModule } from './posts/posts.module';
-import { Post } from "./posts/models/post.model";
+import { Post } from "./posts/models/posts.model";
 import { FilesModule } from './files/files.module';
 import { Like } from './posts/models/like.model';
+import { RolesModule } from './roles/roles.module';
+import { Role } from "./roles/model/roles.model"
+import { UserRoles } from './roles/model/user-roles.model';
 
 @Module({
 	imports: [
@@ -22,13 +25,14 @@ import { Like } from './posts/models/like.model';
 			username: 'postgres',
 			password: 'root',
 			database: 'Geek-fuel',
-			models: [User, Post, Like],
+			models: [User, Post, Like, Role, UserRoles],
 			autoLoadModels: true,
 		}),
 		AuthModule,
 		UsersModule,
 		PostsModule,
 		FilesModule,
+		RolesModule,
 	],
 	controllers: [],
 })

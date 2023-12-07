@@ -1,7 +1,7 @@
 import { Table, Column, DataType, Model, BelongsTo, ForeignKey } from "sequelize-typescript";
 
 import { User } from "src/users/models/user.model";
-import { Post } from "./post.model";
+import { Post } from "./posts.model";
 
 @Table({ tableName: "likes", createdAt: false, updatedAt: false })
 export class Like extends Model<Like> {
@@ -10,17 +10,17 @@ export class Like extends Model<Like> {
 	id: number
 
 	@ForeignKey(() => User)
-	@Column({ type: DataType.INTEGER, allowNull: false, unique: true })
+	@Column({ type: DataType.INTEGER, allowNull: false })
 	userId: number
 
 	@ForeignKey(() => Post)
-	@Column({ type: DataType.INTEGER, allowNull: false, unique: true })
+	@Column({ type: DataType.INTEGER, allowNull: false })
 	postId: number
 
 	@BelongsTo(() => User)
-	user: User;
+	user: User
 
 	@BelongsTo(() => Post)
-	post: Post;
+	post: Post
 
-}
+};

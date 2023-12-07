@@ -1,7 +1,9 @@
-import { Column, DataType, Table, Model, HasMany } from "sequelize-typescript";
+import { Column, DataType, Table, Model, HasMany, BelongsToMany } from "sequelize-typescript";
 
-import { Post } from "../../posts/models/post.model";
+import { Post } from "../../posts/models/posts.model";
 import { Like } from "../../posts/models/like.model"
+import { Role } from "src/roles/model/roles.model";
+import { UserRoles } from "src/roles/model/user-roles.model";
 
 interface UserCreationAttrs {
 	username: string;
@@ -10,6 +12,7 @@ interface UserCreationAttrs {
 
 @Table({ tableName: "users" })
 export class User extends Model<User, UserCreationAttrs>{
+
 	@Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
 	id: number;
 
@@ -24,4 +27,8 @@ export class User extends Model<User, UserCreationAttrs>{
 
 	@HasMany(() => Like)
 	likes: Like[];
+
+	@BelongsToMany(() => Role, () => UserRoles)
+	roles: Role[]
+
 }

@@ -4,8 +4,8 @@ import { SequelizeModule } from "@nestjs/sequelize";
 
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
-import { FilesModule } from 'src/files/files.module';
-import { Post } from "./models/post.model";
+import { FilesModule } from '../files/files.module';
+import { Post } from "./models/posts.model";
 import { UsersModule } from 'src/users/users.module';
 import { User } from 'src/users/models/user.model';
 import { Like } from './models/like.model';

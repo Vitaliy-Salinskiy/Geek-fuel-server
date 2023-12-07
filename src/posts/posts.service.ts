@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, NotFoundException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 
-import { Post } from "./models/post.model";
+import { Post } from "./models/posts.model";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { CreatePostDto } from "./dto/create-post.dto";
-import { FilesService } from "src/files/files.service";
+import { FilesService } from "../files/files.service";
 import { Like } from "./models/like.model";
 import { CreateLikeDto } from "./dto/create-like.dto";
 
