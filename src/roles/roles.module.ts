@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { RolesService } from './roles.service';
 import { RolesController } from './roles.controller';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { Role } from './model/roles.model';
-import { User } from 'src/users/models/user.model';
-import { UserRoles } from './model/user-roles.model';
+import { Role, RoleSchema } from "./schemas/roles.schema"
 
 @Module({
 	controllers: [RolesController],
 	providers: [RolesService],
 	imports: [
-		SequelizeModule.forFeature([Role, User, UserRoles])
+		MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }])
 	],
 	exports: [RolesService]
 })

@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-import { SequelizeModule } from "@nestjs/sequelize";
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
 import { FilesModule } from '../files/files.module';
-import { Post } from "./models/posts.model";
+import { Post, PostSchema } from "./schemas/posts.schema";
 import { UsersModule } from 'src/users/users.module';
-import { User } from 'src/users/models/user.model';
-import { Like } from './models/like.model';
+import { User, UserSchema } from 'src/users/schemas/users.schema';
+
 
 @Module({
 	controllers: [PostsController],
@@ -17,7 +17,10 @@ import { Like } from './models/like.model';
 		MulterModule.register({
 			dest: "./uploads/posts"
 		}),
-		SequelizeModule.forFeature([Post, User, Like]),
+		MongooseModule.forFeature([
+			{ name: Post.name, schema: PostSchema },
+			{ name: User.name, schema: UserSchema },
+		]),
 		FilesModule,
 		UsersModule
 	]

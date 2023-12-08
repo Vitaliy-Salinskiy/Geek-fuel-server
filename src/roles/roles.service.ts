@@ -1,17 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { CreateRoleDto } from './dto/create-role.dto';
-import { InjectModel } from '@nestjs/sequelize';
-import { Role } from './model/roles.model';
-import e from 'express';
+import { Role } from './schemas/roles.schema';
 
 @Injectable()
 export class RolesService {
 
-	constructor(@InjectModel(Role) private roleRepository: typeof Role) { }
+	constructor(@InjectModel(Role.name) private roleRepository: Model<Role>) { }
 
 	async createRole(dto: CreateRoleDto) {
 		try {
-			const role = await this.roleRepository.create(dto);
+			const role = await new this.roleRepository(dto).save();
 			return role;
 		} catch (e) {
 			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
@@ -20,7 +21,7 @@ export class RolesService {
 
 	async getRoleByValue(value: string) {
 		try {
-			const role = await this.roleRepository.findOne({ where: { value } });
+			const role = await this.roleRepository.findOne({ value }).exec();
 
 			if (!role) {
 				throw new HttpException(`Role with value: ${value} not found`, HttpStatus.NOT_FOUND)

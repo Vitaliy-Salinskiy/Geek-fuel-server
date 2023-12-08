@@ -14,14 +14,19 @@ export class FilesService {
 	}
 
 	updateFile(oldImagePath: string, newImagePath: string) {
-		if (fs.existsSync(oldImagePath)) {
-			fs.unlinkSync(oldImagePath);
-		}
-		if (fs.existsSync(newImagePath)) {
-			fs.renameSync(newImagePath, oldImagePath);
-			return true;
-		} else {
-			console.log(`New file not found: ${newImagePath}`);
+		try {
+			if (fs.existsSync(oldImagePath)) {
+				fs.unlinkSync(oldImagePath);
+			}
+			if (fs.existsSync(newImagePath)) {
+				fs.renameSync(newImagePath, oldImagePath);
+				return true;
+			} else {
+				console.log(`New file not found: ${newImagePath}`);
+				return false;
+			}
+		} catch (e) {
+			console.error(`Error updating file: ${e.message}`);
 			return false;
 		}
 	}
