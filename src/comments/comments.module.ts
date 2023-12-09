@@ -6,6 +6,7 @@ import { CommentsService } from './comments.service';
 import { Comment, CommentSchema } from './schemas/comments.schema';
 import { PostsModule } from 'src/posts/posts.module';
 import { UsersModule } from 'src/users/users.module';
+import { MessagesModule } from 'src/messages/messages.module';
 
 @Module({
 	controllers: [CommentsController],
@@ -15,7 +16,8 @@ import { UsersModule } from 'src/users/users.module';
 			{ name: Comment.name, schema: CommentSchema }
 		]),
 		PostsModule,
-		UsersModule
+		UsersModule,
+		MessagesModule
 	]
 })
 export class CommentsModule { }

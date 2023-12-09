@@ -7,6 +7,8 @@ import { Comment, CommentDocument } from './schemas/comments.schema';
 import { UsersService } from 'src/users/users.service';
 import { PostsService } from 'src/posts/posts.service';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
+import { MessagesService } from 'src/messages/messages.service';
+import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 
 @Injectable()
 export class CommentsService {
@@ -14,10 +16,11 @@ export class CommentsService {
 	constructor(
 		@InjectModel(Comment.name) private commentRepository: Model<Comment>,
 		private userService: UsersService,
-		private postService: PostsService
+		private postService: PostsService,
+		private messageService: MessagesService,
 	) { }
 
-	async create(createCommentDto: CreateCommentDto): Promise<CommentDocument> {
+	async create(createCommentDto: CreateCommentDto, createMessageDto: CreateMessageDto): Promise<CommentDocument> {
 		try {
 
 			const user = await this.userService.getOneUserByName(createCommentDto.username);
@@ -34,6 +37,8 @@ export class CommentsService {
 
 			post.comments.push(comment._id);
 			await post.save();
+
+			await this.messageService.sentPostMessage(createMessageDto);
 
 			return comment;
 		} catch (e) {

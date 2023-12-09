@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
+import { CreateMessageDto } from "src/messages/dto/create-message.dto";
+import { MessagesService } from "src/messages/messages.service";
 
 import { Post } from "src/posts/schemas/posts.schema";
 import { User } from "src/users/schemas/users.schema";
@@ -10,10 +12,11 @@ export class LikesService {
 
 	constructor(
 		@InjectModel(User.name) private userRepository: Model<User>,
-		@InjectModel(Post.name) private postRepository: Model<Post>
+		@InjectModel(Post.name) private postRepository: Model<Post>,
+		private messageService: MessagesService
 	) { }
 
-	async likePost(postId: Types.ObjectId, userId: Types.ObjectId): Promise<Post> {
+	async likePost(postId: Types.ObjectId, userId: Types.ObjectId, dto: CreateMessageDto): Promise<Post> {
 		try {
 			const post = await this.postRepository.findById(postId);
 			const user = await this.userRepository.findById(userId);
@@ -30,6 +33,8 @@ export class LikesService {
 			if (!post.likedBy.includes(userId)) {
 				post.likedBy.push(userId);
 				await post.save()
+
+				await this.messageService.sentLikeMessage(dto);
 			}
 
 			return post.populate("likedBy");

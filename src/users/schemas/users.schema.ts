@@ -26,6 +26,9 @@ export class User {
 	@Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }] })
 	comments: Types.ObjectId[]
 
+	@Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }] })
+	messages: Types.ObjectId[]
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

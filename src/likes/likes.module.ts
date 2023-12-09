@@ -7,6 +7,7 @@ import { User, UserSchema } from 'src/users/schemas/users.schema';
 import { Post, PostSchema } from 'src/posts/schemas/posts.schema';
 import { UsersModule } from 'src/users/users.module';
 import { PostsModule } from 'src/posts/posts.module';
+import { MessagesModule } from 'src/messages/messages.module';
 
 @Module({
 	providers: [LikesService],
@@ -16,6 +17,7 @@ import { PostsModule } from 'src/posts/posts.module';
 			{ name: User.name, schema: UserSchema },
 			{ name: Post.name, schema: PostSchema },
 		]),
+		MessagesModule
 	]
 })
 export class LikesModule { }

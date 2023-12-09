@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose"
 
@@ -10,6 +9,7 @@ import { FilesModule } from './files/files.module';
 import { RolesModule } from './roles/roles.module';
 import { LikesModule } from './likes/likes.module';
 import { CommentsModule } from './comments/comments.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
 	imports: [
@@ -30,6 +30,7 @@ import { CommentsModule } from './comments/comments.module';
 		RolesModule,
 		LikesModule,
 		CommentsModule,
+		MessagesModule,
 	],
 })
 export class AppModule { }
