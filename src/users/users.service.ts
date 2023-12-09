@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import * as bcrypt from "bcryptjs";
 
 
 import { CreateUserDto } from "./dto/create-user.dto";
 import { RolesService } from "src/roles/roles.service";
 import { AddRoleDto } from "src/roles/dto/add-role.dto";
-import { User } from "./schemas/users.schema";
+import { User, UserDocument } from "./schemas/users.schema";
 
 @Injectable()
 export class UsersService {
@@ -17,7 +17,7 @@ export class UsersService {
 		private roleService: RolesService
 	) { }
 
-	async getOneUser(username: string): Promise<User> {
+	async getOneUserByName(username: string): Promise<UserDocument> {
 		try {
 			const user = await this.userRepository.findOne({ username }).populate("roles posts").exec();
 
@@ -26,7 +26,20 @@ export class UsersService {
 			}
 
 			throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
+		} catch (e) {
+			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
+	async getOneUserById(id: Types.ObjectId): Promise<UserDocument> {
+		try {
+			const user = await this.userRepository.findById(id).populate("roles posts").exec();
+
+			if (user) {
+				return user
+			}
+
+			throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
 		} catch (e) {
 			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -36,7 +49,7 @@ export class UsersService {
 		return this.userRepository.find().populate("posts roles").exec();
 	}
 
-	async createUser(createUserDto: CreateUserDto): Promise<User> {
+	async createUser(createUserDto: CreateUserDto): Promise<UserDocument> {
 		try {
 			const candidate = await this.userRepository.findOne({ username: createUserDto.username }).exec();
 

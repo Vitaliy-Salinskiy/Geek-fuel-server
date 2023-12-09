@@ -6,7 +6,9 @@ import { UpdatePostDto } from "./dto/update-post.dto";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { FilesService } from "../files/files.service";
 import { User } from "../users/schemas/users.schema";
-import { Post } from "./schemas/posts.schema";
+import { Post, PostDocument } from "./schemas/posts.schema";
+import { UsersService } from "src/users/users.service";
+import { Comment } from "src/comments/schemas/comments.schema";
 
 @Injectable()
 export class PostsService {
@@ -14,12 +16,14 @@ export class PostsService {
 	constructor(
 		@InjectModel(Post.name) private postRepository: Model<Post>,
 		@InjectModel(User.name) private userRepository: Model<User>,
+		@InjectModel(Comment.name) private commentRepository: Model<Comment>,
+		private userService: UsersService,
 		private fileService: FilesService
 	) { }
 
 
-	async getSinglePost(title: string): Promise<Post> {
-		const post = await await this.postRepository.findOne({ title }).populate("author").exec();
+	async getSinglePost(title: string): Promise<PostDocument> {
+		const post = await this.postRepository.findOne({ title }).populate("author").exec();
 
 		if (!post) {
 			throw new NotFoundException(`Post with such title: ${title} doesn't exist`)
@@ -28,13 +32,13 @@ export class PostsService {
 		return post;
 	}
 
-	async getAllPosts(): Promise<Post[]> {
+	async getAllPosts(): Promise<PostDocument[]> {
 		return await this.postRepository.find().populate("author").exec();
 	}
 
-	async createPost(dto: CreatePostDto, image: any): Promise<Post> {
+	async createPost(dto: CreatePostDto, image: any): Promise<PostDocument> {
 		try {
-			const user = await this.userRepository.findById(dto.userId); // using userRepository directly to avoid TypeScript issue: await user.save()
+			const user = await this.userService.getOneUserByName(dto.username);
 
 			if (user) {
 				const imagePath = this.fileService.fileToWebp(image)
@@ -78,6 +82,13 @@ export class PostsService {
 			if (!post) {
 				throw new NotFoundException(`Post with such title: ${title} doesn't exist`)
 			}
+
+			await this.commentRepository.deleteMany({ _id: { $in: post.comments } }).exec();
+
+			await this.userRepository.updateMany(
+				{},
+				{ $pull: { comments: { $in: post.comments } } }
+			);
 
 			await this.postRepository.findOneAndDelete({ title }).exec();
 			this.fileService.deleteImage(post.image)

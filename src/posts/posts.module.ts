@@ -8,6 +8,7 @@ import { FilesModule } from '../files/files.module';
 import { Post, PostSchema } from "./schemas/posts.schema";
 import { UsersModule } from 'src/users/users.module';
 import { User, UserSchema } from 'src/users/schemas/users.schema';
+import { Comment, CommentSchema } from 'src/comments/schemas/comments.schema';
 
 
 @Module({
@@ -20,9 +21,11 @@ import { User, UserSchema } from 'src/users/schemas/users.schema';
 		MongooseModule.forFeature([
 			{ name: Post.name, schema: PostSchema },
 			{ name: User.name, schema: UserSchema },
+			{ name: Comment.name, schema: CommentSchema },
 		]),
 		FilesModule,
 		UsersModule
-	]
+	],
+	exports: [PostsService]
 })
 export class PostsModule { }

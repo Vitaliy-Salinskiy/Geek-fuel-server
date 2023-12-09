@@ -9,7 +9,7 @@ export class UsersController {
 
 	@Get("/:username")
 	getOne(@Param("username") username: string) {
-		return this.userService.getOneUser(username);
+		return this.userService.getOneUserByName(username);
 	}
 
 	@Get()
