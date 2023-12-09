@@ -1,13 +1,12 @@
 import { HttpException, HttpStatus, NotFoundException, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { FilesService } from "../files/files.service";
+import { User } from "../users/schemas/users.schema";
 import { Post } from "./schemas/posts.schema";
-import { UsersService } from "src/users/users.service";
-import { User } from "src/users/schemas/users.schema";
 
 @Injectable()
 export class PostsService {
@@ -15,7 +14,6 @@ export class PostsService {
 	constructor(
 		@InjectModel(Post.name) private postRepository: Model<Post>,
 		@InjectModel(User.name) private userRepository: Model<User>,
-		private userService: UsersService,
 		private fileService: FilesService
 	) { }
 
@@ -82,11 +80,12 @@ export class PostsService {
 			}
 
 			await this.postRepository.findOneAndDelete({ title }).exec();
+			this.fileService.deleteImage(post.image)
 
-			const user = await this.userRepository.findById(post.author.toString()); // using userRepository directly to avoid TypeScript issue: await user.save()
-
-			user.posts = user.posts.filter(userPost => userPost.toString() !== post._id.toString());
-			await user.save();
+			await this.userRepository.updateMany(
+				{ $or: [{ likedPosts: post._id }, { posts: post._id }] },
+				{ $pull: { likedPosts: post._id, posts: post._id } }
+			);
 
 			return { message: 'Post deleted successfully', deletedPost: post };
 		} catch (e) {

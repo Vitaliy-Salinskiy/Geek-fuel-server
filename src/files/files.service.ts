@@ -30,4 +30,21 @@ export class FilesService {
 			return false;
 		}
 	}
+
+	deleteImage(imagePath: string): boolean {
+		try {
+			if (fs.existsSync(imagePath)) {
+				fs.unlinkSync(imagePath);
+				console.log(`Image deleted successfully: ${imagePath}`);
+				return true;
+			} else {
+				console.log(`Image not found: ${imagePath}`);
+				return false;
+			}
+		} catch (e) {
+			console.error(`Error deleting image: ${e.message}`);
+			return false;
+		}
+	}
+
 }

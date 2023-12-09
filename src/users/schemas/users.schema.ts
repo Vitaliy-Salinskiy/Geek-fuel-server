@@ -20,6 +20,9 @@ export class User {
 	@Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }] })
 	posts: Types.ObjectId[]
 
+	@Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }] })
+	likedPosts: Types.ObjectId[]
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
