@@ -17,9 +17,9 @@ export class UsersService {
 		private roleService: RolesService
 	) { }
 
-	async getOneUserByName(username: string): Promise<UserDocument> {
+	async getOneUser(id: Types.ObjectId): Promise<UserDocument> {
 		try {
-			const user = await this.userRepository.findOne({ username }).populate("roles posts").exec();
+			const user = await this.userRepository.findById(id).populate("roles posts").exec();
 
 			if (user) {
 				return user
@@ -31,9 +31,9 @@ export class UsersService {
 		}
 	}
 
-	async getOneUserById(id: Types.ObjectId): Promise<UserDocument> {
+	async getOneUserByName(username: string): Promise<UserDocument> {
 		try {
-			const user = await this.userRepository.findById(id).populate("roles posts").exec();
+			const user = await this.userRepository.findOne({ username }).populate("roles posts").exec();
 
 			if (user) {
 				return user

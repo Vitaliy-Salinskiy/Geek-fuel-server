@@ -22,11 +22,11 @@ export class PostsService {
 	) { }
 
 
-	async getSinglePost(title: string): Promise<PostDocument> {
-		const post = await this.postRepository.findOne({ title }).populate("author").exec();
+	async getSinglePost(id: Types.ObjectId): Promise<PostDocument> {
+		const post = await this.postRepository.findById(id).populate("author").exec();
 
 		if (!post) {
-			throw new NotFoundException(`Post with such title: ${title} doesn't exist`)
+			throw new NotFoundException(`Post not found`)
 		}
 
 		return post;
@@ -38,7 +38,7 @@ export class PostsService {
 
 	async createPost(dto: CreatePostDto, image: any): Promise<PostDocument> {
 		try {
-			const user = await this.userService.getOneUserByName(dto.username);
+			const user = await this.userService.getOneUser(dto.userId);
 
 			if (user) {
 				const imagePath = this.fileService.fileToWebp(image)
@@ -56,18 +56,18 @@ export class PostsService {
 		}
 	}
 
-	async updatePost(title: string, dto: UpdatePostDto, image: any): Promise<Post> {
+	async updatePost(id: Types.ObjectId, dto: UpdatePostDto, image: any): Promise<Post> {
 		try {
-			const post = await this.postRepository.findOne({ title });
+			const post = await this.postRepository.findById(id);
 
 			if (!post) {
-				throw new NotFoundException(`Post with such title: ${title} doesn't exist`)
+				throw new NotFoundException(`Post not found`)
 			}
 
 			this.fileService.fileToWebp(image);
 			this.fileService.updateFile(post.image, image.path);
 
-			const updatedPost = await this.postRepository.findOneAndUpdate({ title }, { ...dto }, { new: true }).exec();
+			const updatedPost = await this.postRepository.findByIdAndUpdate(id, { ...dto }, { new: true }).exec();
 
 			return updatedPost;
 		} catch (e) {
@@ -75,12 +75,12 @@ export class PostsService {
 		}
 	}
 
-	async deletePost(title: string) {
+	async deletePost(id: Types.ObjectId) {
 		try {
-			const post = await this.postRepository.findOne({ title }).exec();
+			const post = await this.postRepository.findById(id).exec();
 
 			if (!post) {
-				throw new NotFoundException(`Post with such title: ${title} doesn't exist`)
+				throw new NotFoundException(`Post not found`)
 			}
 
 			await this.commentRepository.deleteMany({ _id: { $in: post.comments } }).exec();
@@ -90,7 +90,7 @@ export class PostsService {
 				{ $pull: { comments: { $in: post.comments } } }
 			);
 
-			await this.postRepository.findOneAndDelete({ title }).exec();
+			await this.postRepository.findByIdAndDelete(id).exec();
 			this.fileService.deleteImage(post.image)
 
 			await this.userRepository.updateMany(

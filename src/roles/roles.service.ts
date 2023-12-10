@@ -12,7 +12,7 @@ export class RolesService {
 
 	async createRole(dto: CreateRoleDto) {
 		try {
-			const role = await new this.roleRepository(dto).save();
+			const role = await new this.roleRepository({ ...dto, value: dto.value.toUpperCase() }).save();
 			return role;
 		} catch (e) {
 			throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)

@@ -16,8 +16,8 @@ export class MessagesService {
 
 	async sentLikeMessage(dto: CreateMessageDto): Promise<MessageDocument> {
 		try {
-			const sender = await this.userService.getOneUserByName(dto.sender);
-			const receiver = await this.userService.getOneUserByName(dto.receiver);
+			const sender = await this.userService.getOneUser(dto.senderId);
+			const receiver = await this.userService.getOneUser(dto.receiverId);
 
 			if (!receiver && !sender) {
 				throw new NotFoundException("Receiver or sender not found")
@@ -42,8 +42,8 @@ export class MessagesService {
 
 	async sentPostMessage(dto: CreateMessageDto): Promise<MessageDocument> {
 		try {
-			const sender = await this.userService.getOneUserByName(dto.sender);
-			const receiver = await this.userService.getOneUserByName(dto.receiver);
+			const sender = await this.userService.getOneUser(dto.senderId);
+			const receiver = await this.userService.getOneUser(dto.receiverId);
 
 			if (!receiver && !sender) {
 				throw new NotFoundException("Receiver or sender not found")

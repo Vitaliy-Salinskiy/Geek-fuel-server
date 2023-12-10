@@ -23,8 +23,8 @@ export class CommentsService {
 	async create(createCommentDto: CreateCommentDto, createMessageDto: CreateMessageDto): Promise<CommentDocument> {
 		try {
 
-			const user = await this.userService.getOneUserByName(createCommentDto.username);
-			const post = await this.postService.getSinglePost(createCommentDto.postTitle);
+			const user = await this.userService.getOneUser(createCommentDto.userId);
+			const post = await this.postService.getSinglePost(createCommentDto.postId);
 
 			if (!user && !post) {
 				throw new NotFoundException("User or post not found");
@@ -54,7 +54,7 @@ export class CommentsService {
 		try {
 			const comment = await this.commentRepository.findById(id).populate("author").exec();
 
-			if (comment) {
+			if (!comment) {
 				throw new NotFoundException("Comment not found");
 			}
 
@@ -68,6 +68,10 @@ export class CommentsService {
 		try {
 			const comment = await this.commentRepository.findById(id).populate("author").exec();
 
+			if (!comment) {
+				throw new NotFoundException("Comment not found")
+			}
+
 			comment.approved = true;
 			await comment.save()
 
@@ -79,8 +83,12 @@ export class CommentsService {
 
 	async remove(id: Types.ObjectId, dto: DeleteCommentDto) {
 		try {
-			const user = await this.userService.getOneUserByName(dto.username);
-			const post = await this.postService.getSinglePost(dto.postTitle);
+			const user = await this.userService.getOneUser(dto.userId);
+			const post = await this.postService.getSinglePost(dto.postId);
+
+			if (!post || !user.comments.includes(id)) {
+				throw new NotFoundException("User's comment or post not found")
+			}
 
 			user.comments = user.comments.filter((commentId) => commentId.toString() !== id.toString());
 			await user.save();
