@@ -7,8 +7,8 @@ import { CreatePostDto } from "./dto/create-post.dto";
 import { FilesService } from "../files/files.service";
 import { User } from "../users/schemas/users.schema";
 import { Post, PostDocument } from "./schemas/posts.schema";
-import { UsersService } from "src/users/users.service";
-import { Comment } from "src/comments/schemas/comments.schema";
+import { UsersService } from "../users/users.service";
+import { Comment } from "../comments/schemas/comments.schema";
 
 @Injectable()
 export class PostsService {

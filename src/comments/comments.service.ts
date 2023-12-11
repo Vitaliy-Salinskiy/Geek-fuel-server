@@ -66,7 +66,7 @@ export class CommentsService {
 
 	async update(id: Types.ObjectId): Promise<CommentDocument> {
 		try {
-			const comment = await this.commentRepository.findById(id).populate("author").exec();
+			const comment = await this.commentRepository.findById(id).populate("author post").exec();
 
 			if (!comment) {
 				throw new NotFoundException("Comment not found")

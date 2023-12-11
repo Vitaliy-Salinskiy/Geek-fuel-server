@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
-import { CreateMessageDto } from "src/messages/dto/create-message.dto";
-import { MessagesService } from "src/messages/messages.service";
 
-import { Post } from "src/posts/schemas/posts.schema";
-import { User } from "src/users/schemas/users.schema";
+import { CreateMessageDto } from "../messages/dto/create-message.dto";
+import { MessagesService } from "../messages/messages.service";
+import { Post } from "../posts/schemas/posts.schema";
+import { User } from "../users/schemas/users.schema";
 
 @Injectable()
 export class LikesService {

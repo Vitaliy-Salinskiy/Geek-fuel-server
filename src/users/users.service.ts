@@ -3,10 +3,9 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 import * as bcrypt from "bcryptjs";
 
-
 import { CreateUserDto } from "./dto/create-user.dto";
-import { RolesService } from "src/roles/roles.service";
-import { AddRoleDto } from "src/roles/dto/add-role.dto";
+import { RolesService } from "../roles/roles.service";
+import { AddRoleDto } from "../roles/dto/add-role.dto";
 import { User, UserDocument } from "./schemas/users.schema";
 
 @Injectable()
@@ -22,7 +21,7 @@ export class UsersService {
 			const user = await this.userRepository.findById(id).populate("roles posts").exec();
 
 			if (user) {
-				return user
+				return user.populate("roles")
 			}
 
 			throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
@@ -33,10 +32,10 @@ export class UsersService {
 
 	async getOneUserByName(username: string): Promise<UserDocument> {
 		try {
-			const user = await this.userRepository.findOne({ username }).populate("roles posts").exec();
+			const user = await this.userRepository.findOne({ username }).populate("roles").exec();
 
 			if (user) {
-				return user
+				return user.populate("roles")
 			}
 
 			throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
@@ -51,7 +50,7 @@ export class UsersService {
 
 	async createUser(createUserDto: CreateUserDto): Promise<UserDocument> {
 		try {
-			const candidate = await this.userRepository.findOne({ username: createUserDto.username }).exec();
+			const candidate = await this.userRepository.findOne({ username: createUserDto.username }).populate("roles").exec();
 
 			if (candidate) {
 				throw new HttpException(`User with such username: ${createUserDto.username} already exists`, HttpStatus.CONFLICT);
@@ -75,6 +74,7 @@ export class UsersService {
 			const user = await this.userRepository.findById(dto.userId).exec();
 			const role = await this.roleService.getRoleByValue(dto.value);
 			if (role && user) {
+				if (user.roles.includes(role._id)) return { message: "User already own this role" }
 				user.roles.push(role._id);
 				await user.save();
 				return { message: `Role ${dto.value} was successfully added` };

@@ -5,8 +5,6 @@ import { LikesService } from './likes.service';
 import { LikesController } from './likes.controller';
 import { User, UserSchema } from 'src/users/schemas/users.schema';
 import { Post, PostSchema } from 'src/posts/schemas/posts.schema';
-import { UsersModule } from 'src/users/users.module';
-import { PostsModule } from 'src/posts/posts.module';
 import { MessagesModule } from 'src/messages/messages.module';
 
 @Module({

@@ -13,7 +13,7 @@ async function bootstrap() {
 	const config = new DocumentBuilder()
 		.setTitle("Geek Fuel API")
 		.setDescription("REST API Documentation")
-		.setVersion("1.0.0")
+		.setVersion("1.0")
 		.addTag("Geek Fuel")
 		.build();
 
