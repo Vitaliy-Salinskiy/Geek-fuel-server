@@ -39,7 +39,7 @@ export class PostsController {
 	@ApiBody({ type: CreatePostDto, description: 'DTO for creating a post' })
 	@ApiResponse({ status: 201, description: "The operation was successful and the created post data is in the response body", type: PostSchema })
 	@UseInterceptors(FileInterceptor("image"))
-	create(@Body() dto: CreatePostDto, @UploadedFile() image: Express.Multer.File) {
+	create(@Body() dto: CreatePostDto, @UploadedFile() image: any) {
 		return this.postsService.createPost(dto, image);
 	}
 

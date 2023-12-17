@@ -21,7 +21,7 @@ import { ProductsModule } from './products/products.module';
 			imports: [ConfigModule],
 			inject: [ConfigService],
 			useFactory: async (configService: ConfigService) => ({
-				uri: configService.get<string>("MONGO_DB_URL")
+				uri: configService.get<string>("MONGO_DB_URL") + "geek-fuel",
 			}),
 		}),
 		AuthModule,
