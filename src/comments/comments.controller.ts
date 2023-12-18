@@ -52,7 +52,7 @@ export class CommentsController {
 	update(@Param('id') id: Types.ObjectId) {
 		return this.commentsService.update(id);
 	}
-
+	id
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Roles("USER")
 	@Delete(':id')

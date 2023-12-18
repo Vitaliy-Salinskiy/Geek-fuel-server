@@ -1,6 +1,6 @@
-import { Controller, Request, Post, UseGuards, Body, Get } from "@nestjs/common";
+import { Controller, Request, Post, UseGuards, Body, Get, Res } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { Request as ExpressRequest } from "express"
+import { Request as ExpressRequest, Response } from "express"
 
 import { UsersService } from "../users/users.service";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
@@ -26,9 +26,13 @@ export class AuthController {
 	@ApiBody({ type: CreateUserDto, description: 'DTO for logging in' })
 	@ApiOkResponse({ status: 200, description: 'Successfully logged in', type: UserSchema })
 	@ApiUnauthorizedResponse({ status: 401, description: 'Unauthorized' })
-	login(@Request() req: ExpressRequest) {
-		console.log(req.user)
-		return this.authService.login(req.user);
+	async login(@Request() req: ExpressRequest, @Res({ passthrough: true }) response: Response) {
+		const loginResult = await this.authService.login(req.user);
+		if (loginResult.access_token) {
+			response.cookie('access_token', loginResult.access_token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+			return loginResult;
+		}
+		return loginResult;
 	}
 
 	@Post("/registration")
