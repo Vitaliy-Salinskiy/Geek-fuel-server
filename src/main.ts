@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as cookieParser from 'cookie-parser';
+import * as serveStatic from 'serve-static';
 
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -27,6 +28,11 @@ async function bootstrap() {
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
 		credentials: true
 	});
+
+	app.use('/uploads', serveStatic('uploads', {
+		maxAge: '1d',
+		extensions: ["webp"]
+	}));
 
 	await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`));
 }
