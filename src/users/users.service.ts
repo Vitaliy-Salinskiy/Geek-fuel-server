@@ -18,7 +18,7 @@ export class UsersService {
 
 	async getOneUser(id: Types.ObjectId): Promise<UserDocument> {
 		try {
-			const user = await this.userRepository.findById(id).populate("roles posts").exec();
+			const user = await this.userRepository.findById(id).populate("roles posts messages").exec();
 
 			if (user) {
 				return user.populate("roles")

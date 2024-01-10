@@ -33,7 +33,12 @@ export class PostsService {
 	}
 
 	async getAllPosts(): Promise<PostDocument[]> {
-		return await this.postRepository.find().populate("author").exec();
+		return await this.postRepository.find().populate("author").populate({
+			path: "comments",
+			populate: {
+				path: "author"
+			}
+		}).exec();
 	}
 
 	async createPost(dto: CreatePostDto, image: any): Promise<PostDocument> {
